@@ -22,7 +22,6 @@
   (str root "/wall_" id ".jpg"))
 
 (defn get-img [client id]
-  (println (str "getting " id))
   (let [response (http/GET client (make-img-url id))]
     (-> response
         http/await
@@ -45,14 +44,16 @@
 
 (defn save-img [binaryimage file]
   (with-open [out (io/output-stream file)]
-    (io/copy binaryimage out)))
+    (io/copy binaryimage out)
+    (println file)))
 
 (defn -main
-  [url & args]
+  [folder n-str url & args]
+  (def n (bigdec n-str))
   (with-open [client (http/create-client)]
     (def id-list (set (get-image-ids client url)))
     (def jpg-ids (filter (fn [x] (= (get-img-extension client x) "jpg")) id-list))
-    (def images (doall (map (partial get-img client) (take 9 jpg-ids)))))
-  (doall (for [[image id] (map vector images (range 1 10))]
-     (save-img image (make-output-path "/home/eric/.wall" id))))
+    (def images (doall (map (partial get-img client) (take n jpg-ids)))))
+  (doall (for [[image id] (map vector images (take n jpg-ids))]
+     (save-img image (make-output-path folder id))))
 )
