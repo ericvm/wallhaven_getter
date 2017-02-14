@@ -21,28 +21,28 @@
 (defn make-output-path [root id]
   (str root "/wall_" id ".jpg"))
 
-(defn get-img [client id]
+(defn get-img! [client id]
   (let [response (http/GET client (make-img-url id))]
     (-> response
         http/await
         http/body
         .toByteArray)))
 
-(defn get-image-ids [client url]
+(defn get-image-ids! [client url]
   (let [response (http/GET client url)]
     (-> response
         http/await
         http/string
         parse-html)))
 
-(defn get-img-extension [client id]
+(defn get-img-extension! [client id]
   (let [response (http/GET client (make-img-page id))]
     (-> response
         http/await
         http/string
         parse-format)))
 
-(defn save-img [binaryimage file]
+(defn save-img! [binaryimage file]
   (with-open [out (io/output-stream file)]
     (io/copy binaryimage out)
     (println file)))
@@ -51,9 +51,9 @@
   [folder n-str url & args]
   (def n (bigdec n-str))
   (with-open [client (http/create-client)]
-    (def id-list (set (get-image-ids client url)))
-    (def jpg-ids (filter (fn [x] (= (get-img-extension client x) "jpg")) id-list))
-    (def images (doall (map (partial get-img client) (take n jpg-ids)))))
-  (doall (for [[image id] (map vector images (take n jpg-ids))]
-     (save-img image (make-output-path folder id))))
+    (def id-list (set (get-image-ids! client url)))
+    (def jpg-ids (filter (fn [x] (= (get-img-extension! client x) "jpg")) id-list))
+    (def images (mapv (partial get-img! client) (take n jpg-ids))))
+    (doseq [image images id (take n jpg-ids)]
+      (save-img! image (make-output-path folder id)))
 )
