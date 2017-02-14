@@ -1,6 +1,6 @@
-# clojure-noob
+# wallhaven-getter
 
-FIXME: description
+Script that makes http requests to http://alpha.wallhaven.cc and retrieves wallpapers according to predefined queries
 
 ## Installation
 
@@ -10,27 +10,6 @@ Download from http://example.com/FIXME.
 
 FIXME: explanation
 
-    $ java -jar clojure-noob-0.1.0-standalone.jar [args]
-
-## Options
-
-FIXME: listing of options this app accepts.
+    $ java -jar wallhaven-getter-0.1.0-standalone.jar <folder> <num_wallpapers> <http_url>
 
 ## Examples
-
-...
-
-### Bugs
-
-...
-
-### Any Other Sections
-### That You Think
-### Might be Useful
-
-## License
-
-Copyright © 2016 FIXME
-
-Distributed under the Eclipse Public License either version 1.0 or (at
-your option) any later version.
